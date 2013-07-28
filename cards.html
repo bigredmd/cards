@@ -1,0 +1,348 @@
+<script>
+/*This is Mike's Code */
+
+/**
+ *	Object which handles the players.
+ */
+
+function cardPlayer( identifier )	{
+
+	/**
+	 *	@var array The player's hand.
+	 *	@var array The player's hand.
+	 */
+
+	this.hand = new Array();
+	this.money;
+	this.identifier = identifier;
+
+}
+
+/**
+ *	Object which handles the pokergame.
+ *	@param integer the number of players.
+ */
+
+function pokerGame( numPlayers )	{
+
+	/**
+	 *	@var array An array of card objects.  The deck of cards.
+	 *	@var array And array of player objects.  The players.
+	 *	@var array The cards on the table.
+	 */
+
+	var deck = [ 
+		{ 'suit' : 'spades','value' : 2 },
+		{ 'suit' : 'spades','value' : 3 },
+		{ 'suit' : 'spades','value' : 4 },
+		{ 'suit' : 'spades','value' : 5 },
+		{ 'suit' : 'spades','value' : 6 },
+		{ 'suit' : 'spades','value' : 7 },
+		{ 'suit' : 'spades','value' : 8 },
+		{ 'suit' : 'spades','value' : 9 },
+		{ 'suit' : 'spades','value' : 10 },
+		{ 'suit' : 'spades','value' : 11 },
+		{ 'suit' : 'spades','value' : 12 },
+		{ 'suit' : 'spades','value' : 13 },
+		{ 'suit' : 'spades','value' : 14 },
+		{ 'suit' : 'clubs','value' : 2 },
+		{ 'suit' : 'clubs','value' : 3 },
+		{ 'suit' : 'clubs','value' : 4 },
+		{ 'suit' : 'clubs','value' : 5 },
+		{ 'suit' : 'clubs','value' : 6 },
+		{ 'suit' : 'clubs','value' : 7 },
+		{ 'suit' : 'clubs','value' : 8 },
+		{ 'suit' : 'clubs','value' : 9 },
+		{ 'suit' : 'clubs','value' : 10 },
+		{ 'suit' : 'clubs','value' : 11 },
+		{ 'suit' : 'clubs','value' : 12 },
+		{ 'suit' : 'clubs','value' : 13 },
+		{ 'suit' : 'clubs','value' : 14 },
+		{ 'suit' : 'diamonds','value' : 2 },
+		{ 'suit' : 'diamonds','value' : 3 },
+		{ 'suit' : 'diamonds','value' : 4 },
+		{ 'suit' : 'diamonds','value' : 5 },
+		{ 'suit' : 'diamonds','value' : 6 },
+		{ 'suit' : 'diamonds','value' : 7 },
+		{ 'suit' : 'diamonds','value' : 8 },
+		{ 'suit' : 'diamonds','value' : 9 },
+		{ 'suit' : 'diamonds','value' : 10 },
+		{ 'suit' : 'diamonds','value' : 11 },
+		{ 'suit' : 'diamonds','value' : 12 },
+		{ 'suit' : 'diamonds','value' : 13 },
+		{ 'suit' : 'diamonds','value' : 14 },
+		{ 'suit' : 'hearts','value' : 2 },
+		{ 'suit' : 'hearts','value' : 3 },
+		{ 'suit' : 'hearts','value' : 4 },
+		{ 'suit' : 'hearts','value' : 5 },
+		{ 'suit' : 'hearts','value' : 6 },
+		{ 'suit' : 'hearts','value' : 7 },
+		{ 'suit' : 'hearts','value' : 8 },
+		{ 'suit' : 'hearts','value' : 9 },
+		{ 'suit' : 'hearts','value' : 10 },
+		{ 'suit' : 'hearts','value' : 11 },
+		{ 'suit' : 'hearts','value' : 12 },
+		{ 'suit' : 'hearts','value' : 13 },
+		{ 'suit' : 'hearts','value' : 14 },
+	];
+	var players = new Array();
+	var table = new Array();
+	startGame();
+	
+	/**
+	 *	Constructor function. Initiates the player objects and puts them in the players array.
+	 *	@return void.
+	 */	 
+	 
+	function startGame()	{
+	 
+		for ( i = 0; i < numPlayers; i++ )
+			players[ i ] = new cardPlayer( i );
+	 
+	}
+	 
+	/**
+	 *	Helper function.  Swaps two cards.
+	 *	@param integer First index of the swap.
+	 *	@param integer Second index of the swap.
+	 *	@param array The array.
+	 *	@return void.
+	 */
+	 
+	function swap( a,b,array )	{
+	 
+		var temp = array[ a ];
+		array[ a ] = array[ b ];
+		array[ b ] = temp;
+	
+	}
+	
+	function findBest()	{
+		
+		var best = new findWinner( players,table );
+		
+	}
+	 
+	/**
+	 *	Shuffles the deck.
+	 *	@return void.
+	 */
+	
+	this.shuffle = function()	{
+		
+		var len = deck.length, randNum, temp;
+		
+		while ( len > 0 ) {
+			randNum = Math.floor( Math.random() * ( len - 1 ) );
+			swap( len,randNum,deck )
+			len--;
+		}
+		
+	}
+	
+	/**
+	 *	Deals the cards to the player objects.
+	 *	@return void
+	 */
+	
+	this.deal = function()	{
+	
+		var card;
+	
+		for ( i = 0; i < 2; i++ ) {
+			for ( x in players ) {
+				card = deck.shift()
+				players[x].hand.push( card );
+			}
+		}
+		for ( i = 0; i < 3; i++ ) {
+			this.draw();
+		}
+		findBest();
+		
+	}
+	
+	/**
+	 *	Burns a card then draws a card and puts it down on the table.
+	 *	@return void
+	 */
+	
+	this.draw = function()	{
+		
+		if( table.length === 4 ) {
+			document.getElementById('drawButton').style.display = 'none';
+		}
+		var card;
+		deck.shift();
+		card = deck.shift();
+		table.push( card );
+		
+	}
+	
+	/**
+	 *	Generates the display for the hands and applies it to the page.
+	 *	@param string the div to apply the hands display to.
+	 *	@return void.
+	 */
+	
+	this.displayHands = function( div )	{
+		
+		var cards = new displayCards();
+		var str = '';
+		for ( x in players )
+			str += cards.displayCards( players[ x ].hand );
+		document.getElementById( div ).innerHTML = str;
+	}
+	
+	/**
+	 *	Generates the display for the table and applies it to the page.
+	 *	@param string the div to apply the table display to.
+	 *	@return void.
+	 */
+
+	
+	this.displayTable = function( div )	{
+		
+		var cards = new displayCards();
+		var str = '';
+		str += cards.displayCards( table );
+		document.getElementById( div ).innerHTML = str;
+		
+	}
+
+}
+
+/**
+ *	Object which handles the display of cards.
+ */
+ 
+function displayCards()	{
+	
+	/**
+	 *	Matches an image to the suit of a card.
+	 *	@return string The filepath of the card suit image.
+	 */
+	
+	function selectImage( card )	{
+	
+		var url;
+		
+		switch( card.suit ) {
+			case 'spades':
+				url='spades.png';
+				break;
+			case 'clubs':
+				url='clubs.png';
+				break;
+			case 'hearts':
+				url='hearts.png';
+				break;
+			case 'diamonds':
+				url='diamond.png';
+				break;
+		}
+		return url;
+		
+	}
+	
+	/**
+	 *	Matches an description to the value of a flush card.
+	 *	@return string The text value of a flush card.
+	 */
+	
+	function translateFlush( card )	{
+		var value;
+		
+		switch( card.value ) {
+			case 11:
+				value = 'Jack';
+				break;
+			case 12:
+				value = 'Queen';
+				break;
+			case 13:
+				value = 'King';
+				break;
+			case 14:
+				value = 'Ace';
+				break;
+			default:
+				value = card.value;
+				break;
+		}
+		return value;
+	}
+	
+	/**
+	 *	Function which handles the display of cards.
+	 *	@param array An array of card objects.
+	 *	@return string A string of html markup representing the display of the cards.
+	 */
+	
+	this.displayCards = function( cardArray ) {
+		
+		var str = '';
+		
+		str += '<div>';
+		for ( x in cardArray ) {
+			str += '<div style="background:white;float:left;width:120px;height:165px;border:1px solid black;margin-bottom:10px;border-radius:10px;margin:10px;font-weight:bold;font-family:arial;text-align:center;font-size:25px;box-shadow:5px 5px 8px black;"><img style="display:block;margin:auto;" src="' + selectImage( cardArray[ x ] ) + '" />' + translateFlush( cardArray[ x ] ) + '</div>';
+		}
+		str += '</div>';
+		return str;
+	}
+	
+}
+
+/**
+ *	Object which handles the logic of which player has the best hand.
+ */
+
+function findWinner( playerArray,tableArray )	{
+
+	/**
+	 *	@var array an array containing all a subarray of all eligible cards for each player.
+	 */
+	 
+	var stakes = new Array();
+
+	/**
+	 *	Constructor function.  Populates the stakes variable.
+	 */
+	
+	function allAvailable()	{
+		
+		for ( x in playerArray ) {
+			var arr = playerArray[ x ].hand;
+			for ( y in tableArray ) {
+				arr.push( tableArray[ y ] );
+			}
+			stakes.push( arr );
+		}
+		
+	}
+	
+	//allAvailable();
+	alert( stakes );
+	
+}
+
+function startGame()	{
+
+var game = new pokerGame( 3 );
+window.game = game;
+game.shuffle();
+game.deal();
+game.displayHands( 'hands' );
+game.displayTable( 'table' );
+document.getElementById('drawButton').style.display = 'block';
+}
+
+</script>
+<style>body {background:maroon;}</style>
+<body>
+<div id="hands" style="float:left;">
+</div>
+<div id="table" style="float:left;margin-left:200px;"></div>
+<input type="button" value="Start Game" onclick="startGame();this.value = 'Start Over';" />
+<input type="button" value="Draw" id="drawButton" style="display:none;" onclick="game.draw();game.displayTable( 'table' );;" />
+</body>
